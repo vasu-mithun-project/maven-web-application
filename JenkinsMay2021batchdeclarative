@@ -35,6 +35,7 @@ steps
 sh "mvn clean package"   //if u installed maven in other linux machine we need to used in declarative way or scripted way use sh
 }
 }
+/*
 stage('ExecuteSonarQubeReport')    // this stage for Executing sonar 
 {
 steps
@@ -59,7 +60,7 @@ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@52
 }
 }
 }
-
+*/
 }   // this is for stages closing curly braces
 post
 {
