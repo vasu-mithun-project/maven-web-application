@@ -1,13 +1,12 @@
 //Declarative Pipeline
 //starting with pipeline
-
 pipeline 
 {                // starting pipe line curly braces            
 agent any        // 1.to run a job in node
 
 triggers
 {
-pollSCM('* * * * *')   // to trigger the jobs using poll scm
+pollSCM('* * * * *')  // to trigger the jobs using poll scm
 //pipelineTriggers([githubPush()])
 //pipelineTriggers([cron('* * * * *')])
 }
