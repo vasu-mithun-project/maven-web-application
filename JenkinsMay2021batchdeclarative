@@ -12,7 +12,7 @@ pollSCM('* * * * *')  // to trigger the jobs using poll scm
 }
 options
 {
-timestamps()
+//timestamps()
 buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: ''))
 }
 tools //if u not installed maven in jenkins server machine then to get the maven path we use --> tools   
