@@ -6,7 +6,8 @@ agent any        // 1.to run a job in node
 
 triggers
 {
-pollSCM('* * * * *')  // to trigger the jobs using poll scm
+githubPush()
+//pollSCM('* * * * *')  // to trigger the jobs using poll scm
 }
 options
 {
