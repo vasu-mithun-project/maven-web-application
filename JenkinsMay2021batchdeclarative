@@ -1,0 +1,83 @@
+//Declarative Pipeline
+//starting with pipeline
+
+pipeline 
+{                // starting pipe line curly braces            
+agent any        // 1.to run a job in node
+
+triggers
+{
+pollSCM('* * * * *')   // to trigger the jobs using poll scm
+//pipelineTriggers([githubPush()])
+//pipelineTriggers([cron('* * * * *')])
+}
+options
+{
+timestamps()
+buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '2', numToKeepStr: ''))
+}
+tools //if u not installed maven in jenkins server machine then to get the maven path we use --> tools   
+{
+maven "maven-3.8.1"
+}
+stages 
+{                        // starting stages curly braces
+stage('CheckoutCode')    // 2 .to checkout the code from github (i.e from scm)
+{
+steps
+{
+git branch: 'development', credentialsId: '0885eeb1-a271-41a3-a750-8149ccbcd919', url: 'https://github.com/vasu-mithun-project/maven-web-application.git'
+}
+} 
+stage('Build')      // 3 .to build the package
+{
+steps
+{
+sh "mvn clean package"   //if u installed maven in other linux machine we need to used in declarative way or scripted way use sh
+}
+}
+stage('ExecuteSonarQubeReport')    // this stage for Executing sonar 
+{
+steps
+{
+sh "mvn clean sonar:sonar"          //this is the command to run sonar 
+}
+}
+stage('UploadArtifactsIntoNexus')   // this stage for nexus to deploy artifcat into nexus
+{ 
+steps
+{
+sh "mvn clean deploy"               // to deploy artifcat in to nexus repo we use this command
+}     
+}
+stage('DeploAppintoTomcatServer')
+{
+steps
+{
+sshagent(['8cc6ab41-2951-4680-89c4-aa577e96c94b']) 
+{
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@52.3.240.65:/opt/apache-tomcat-9.0.46/webapps/"
+}
+}
+}
+
+}   // this is for stages closing curly braces
+post
+{
+success
+{
+emailext body: '''Build is over!!!! - Success !!
+
+Regards,
+Vasu.V''', subject: 'Build is over', to: 'vasu.jenkinsmails@gmail.com'
+}
+failure     
+{
+emailext body: '''Build is over!!!! - Failed !!
+
+Regards,
+Vasu.V''', subject: 'Build is over', to: 'vasu.jenkinsmails@gmail.com'
+}
+}
+}   // this is for pipeline closing curly braces
+
